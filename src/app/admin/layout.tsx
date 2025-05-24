@@ -10,33 +10,34 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const requestHeaders = headers();
-  // The 'next-url' header gives the path of the incoming request, e.g., /admin/login or /admin/dashboard
-  // It should provide the full URL, from which we can extract the pathname.
-  const nextUrlHeader = requestHeaders.get('next-url'); 
   let currentPathname = '';
+
+  const nextUrlHeader = requestHeaders.get('next-url');
+  const invokePathHeader = requestHeaders.get('x-invoke-path'); // Often contains just the pathname
 
   if (nextUrlHeader) {
     try {
-      // Use URL constructor to reliably parse the pathname, even if nextUrlHeader contains query params
-      // A base URL is required for the constructor if nextUrlHeader is just a path, but it's not used if nextUrlHeader is absolute.
+      // Use URL constructor to reliably parse the pathname.
+      // A base URL is required if nextUrlHeader is just a path (e.g., /admin/login).
+      // If nextUrlHeader is a full URL (e.g., http://host/admin/login), the base is ignored.
       const url = new URL(nextUrlHeader, 'http://localhost'); 
       currentPathname = url.pathname;
     } catch (e) {
-      // Fallback in case of an unexpected format for next-url.
-      // If nextUrlHeader is null or parsing fails, currentPathname remains '',
-      // which could lead to a redirect if not handled carefully, but 'next-url' should be reliable.
       console.error("Error parsing 'next-url' header in AdminLayout:", e, "Header value:", nextUrlHeader);
-      // If parsing fails or header is missing, and we can't determine the path,
-      // it's safer not to redirect from here to avoid loops if the user IS on /admin/login.
-      // However, this scenario should be rare. For now, we proceed, and if currentPathname is '',
-      // the condition `currentPathname !== '/admin/login'` will be true.
-      currentPathname = typeof nextUrlHeader === 'string' ? nextUrlHeader : ''; // Best effort fallback
+      // If next-url parsing fails, try invokePathHeader if currentPathname is still empty and invokePathHeader exists
+      if (invokePathHeader) {
+        currentPathname = invokePathHeader;
+      } else {
+        // Fallback to using nextUrlHeader as string if it's a string, otherwise empty
+        currentPathname = typeof nextUrlHeader === 'string' ? nextUrlHeader : ''; 
+      }
     }
+  } else if (invokePathHeader) {
+    currentPathname = invokePathHeader;
+    // console.log("AdminLayout: Used 'x-invoke-path' as fallback for current pathname:", currentPathname); // Optional: for debugging
   } else {
-    // If the 'next-url' header is missing, we cannot reliably determine the current path here.
-    // This could potentially lead to issues with the redirect logic.
-    // This scenario is unexpected for page renders.
-    console.warn("'next-url' header not found in AdminLayout. Path-based redirect logic might be affected.");
+    console.warn("'next-url' and 'x-invoke-path' headers not found in AdminLayout. Path-based redirect logic might be affected. Current determined path (if any):", currentPathname);
+    // currentPathname remains '', as initialized, if both headers are missing.
   }
 
   const authenticated = await isAuthenticated();
