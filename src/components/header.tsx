@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Rocket, LogIn } from 'lucide-react';
 import { LogoutButton } from '@/components/admin/logout-button';
@@ -18,7 +19,7 @@ export async function Header() {
           <LogoutButton />
         ) : (
           <Button asChild variant="ghost" className="text-primary-foreground hover:text-accent hover:bg-transparent">
-            <Link href="/admin/login">
+            <Link href="/"> {/* Changed from /admin/login to / */}
               <LogIn className="mr-2 h-5 w-5" />
               Admin Portal
             </Link>
