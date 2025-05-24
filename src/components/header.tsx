@@ -1,0 +1,22 @@
+import Link from 'next/link';
+import { Rocket } from 'lucide-react';
+import { LogoutButton } from '@/components/admin/logout-button';
+import { isAuthenticated } from '@/auth';
+
+export async function Header() {
+  const adminAuthenticated = await isAuthenticated();
+
+  return (
+    <header className="py-6 px-4 md:px-8 border-b border-border/50">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary-foreground hover:text-accent transition-colors">
+          <Rocket className="h-7 w-7 text-accent" />
+          <span>LabLink</span>
+        </Link>
+        {adminAuthenticated && (
+          <LogoutButton />
+        )}
+      </div>
+    </header>
+  );
+}
