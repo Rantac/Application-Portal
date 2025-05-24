@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Rocket } from 'lucide-react';
+import { Rocket, LogIn } from 'lucide-react';
 import { LogoutButton } from '@/components/admin/logout-button';
 import { isAuthenticated } from '@/auth';
+import { Button } from '@/components/ui/button';
 
 export async function Header() {
   const adminAuthenticated = await isAuthenticated();
@@ -13,8 +14,15 @@ export async function Header() {
           <Rocket className="h-7 w-7 text-accent" />
           <span>LabLink</span>
         </Link>
-        {adminAuthenticated && (
+        {adminAuthenticated ? (
           <LogoutButton />
+        ) : (
+          <Button asChild variant="ghost" className="text-primary-foreground hover:text-accent hover:bg-transparent">
+            <Link href="/admin/login">
+              <LogIn className="mr-2 h-5 w-5" />
+              Admin Portal
+            </Link>
+          </Button>
         )}
       </div>
     </header>
