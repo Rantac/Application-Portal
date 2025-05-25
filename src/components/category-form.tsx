@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import type { Category, CategoryFormData, CategoryFormState } from '@/lib/definitions';
@@ -41,9 +42,9 @@ export function CategoryForm({
 
   const initialFormState: CategoryFormState = { message: '', success: false };
   
-  // The way useFormState is used depends on whether an ID is passed to the action (for update)
+  // The way useActionState is used depends on whether an ID is passed to the action (for update)
   // or just previous state (for create)
-  const [state, formAction] = useFormState(
+  const [state, formAction] = useActionState(
     category?.id ? (prevState, formData) => action(category.id, prevState, formData) : action, 
     initialFormState
   );

@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { loginAction } from '@/lib/actions';
@@ -18,7 +19,7 @@ export function AdminLoginForm() {
   const router = useRouter();
   const { toast } = useToast();
   const initialState: LoginFormState = { message: '', success: false };
-  const [state, dispatch] = useFormState(loginAction, initialState);
+  const [state, dispatch] = useActionState(loginAction, initialState);
   
   useEffect(() => {
     if (state?.success) {
