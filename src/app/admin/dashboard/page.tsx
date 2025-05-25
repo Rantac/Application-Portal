@@ -5,7 +5,9 @@ import { getCategories } from '@/lib/data';
 export const revalidate = 0; // Ensure fresh data on every load
 
 export default async function AdminDashboardPage() {
+  console.log('[Page] AdminDashboardPage: Fetching categories for dashboard.');
   const categories = await getCategories();
+  console.log('[Page] AdminDashboardPage: Categories received for rendering:', JSON.stringify(categories, null, 2));
 
   return (
     <div>

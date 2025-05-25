@@ -48,13 +48,16 @@ export async function addCategoryAction(
   prevState: CategoryFormState | undefined,
   formData: FormData
 ): Promise<CategoryFormState> {
+  console.log('[Action] addCategoryAction: Received form data.');
   if (!(await isAuthenticated())) {
+    console.log('[Action] addCategoryAction: User not authenticated.');
     return { message: 'Unauthorized.', success: false };
   }
 
   const validatedFields = CategorySchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
+    console.log('[Action] addCategoryAction: Validation failed.', validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Failed to create category. Please check your input.',
@@ -64,15 +67,20 @@ export async function addCategoryAction(
   
   try {
     const { name, logoUrl, contentLink } = validatedFields.data;
-    await dataStore.addCategory({ name, logoUrl, contentLink });
+    console.log('[Action] addCategoryAction: Validated data to add:', { name, logoUrl, contentLink });
+    const newCategory = await dataStore.addCategory({ name, logoUrl, contentLink });
+    console.log('[Action] addCategoryAction: Result from dataStore.addCategory:', newCategory);
   } catch (error) {
+    console.error('[Action] addCategoryAction: Database Error:', error);
     return { message: 'Database Error: Failed to Create Category.', success: false };
   }
 
+  console.log('[Action] addCategoryAction: Revalidating paths.');
   revalidatePath('/');
   revalidatePath('/admin/dashboard');
   revalidatePath('/user-portal');
   // redirect('/admin/dashboard'); // Let client handle redirect
+  console.log('[Action] addCategoryAction: Category creation successful.');
   return { message: 'Category created successfully!', success: true };
 }
 

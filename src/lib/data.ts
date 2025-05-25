@@ -30,6 +30,7 @@ let categories: Category[] = [
 
 // Simulate database operations
 export async function getCategories(): Promise<Category[]> {
+  console.log('[Data] getCategories: Fetching categories. Current count:', categories.length);
   // Simulate network delay
   // await new Promise(resolve => setTimeout(resolve, 500));
   return JSON.parse(JSON.stringify(categories)); // Return a deep copy
@@ -41,12 +42,15 @@ export async function getCategoryById(id: string): Promise<Category | undefined>
 }
 
 export async function addCategory(category: Omit<Category, 'id'>): Promise<Category> {
+  console.log('[Data] addCategory: Attempting to add category:', category);
   // await new Promise(resolve => setTimeout(resolve, 300));
   const newCategory: Category = {
     ...category,
     id: String(Date.now() + Math.random()), // Simple unique ID generation
   };
   categories.push(newCategory);
+  console.log('[Data] addCategory: Category added. New category object:', newCategory);
+  console.log('[Data] addCategory: All categories after addition:', JSON.stringify(categories, null, 2));
   return JSON.parse(JSON.stringify(newCategory));
 }
 
@@ -69,6 +73,7 @@ export async function deleteCategory(id: string): Promise<boolean> {
 
 // Helper function to reset data for testing or demo purposes if needed
 export function _resetCategories(newData?: Category[]): void {
+  console.log('[Data] _resetCategories: Resetting categories.');
   categories = newData || [
     {
       id: '1',
@@ -83,4 +88,5 @@ export function _resetCategories(newData?: Category[]): void {
       contentLink: 'https://example.com/kubernetes',
     },
   ];
+   console.log('[Data] _resetCategories: Categories after reset:', JSON.stringify(categories, null, 2));
 }
