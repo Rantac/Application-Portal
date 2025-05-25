@@ -59,12 +59,13 @@ export function CategoryCard({ category, isAdmin = false }: CategoryCardProps) {
           width={48}
           height={48}
           className="rounded-md object-contain"
-          data-ai-hint={category.logoAiHint || 'technology logo'}
+          data-ai-hint="logo icon" // Generic hint as specific AI hint field is removed
         />
       </div>
       <div className="mt-auto flex justify-between items-end">
-        <span className="text-sm text-muted-foreground">{category.contentCount} Labs</span>
-        {!isAdmin && (
+        {/* Content count removed */}
+        <span className="text-sm text-muted-foreground">{/* Placeholder for potential future info */}</span> 
+        {!isAdmin && category.contentLink && (
           <ArrowRight className="h-5 w-5 text-accent group-hover:translate-x-1 transition-transform" />
         )}
       </div>

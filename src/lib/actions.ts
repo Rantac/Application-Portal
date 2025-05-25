@@ -41,7 +41,7 @@ export async function loginAction(
 
 export async function logoutAction(): Promise<void> {
   await clearSessionCookie();
-  redirect('/admin/login');
+  redirect('/'); // Redirect to main login page
 }
 
 export async function addCategoryAction(
@@ -63,14 +63,15 @@ export async function addCategoryAction(
   }
   
   try {
-    const { name, logoUrl, logoAiHint, contentCount, contentLink } = validatedFields.data;
-    await dataStore.addCategory({ name, logoUrl, logoAiHint, contentCount, contentLink });
+    const { name, logoUrl, contentLink } = validatedFields.data;
+    await dataStore.addCategory({ name, logoUrl, contentLink });
   } catch (error) {
     return { message: 'Database Error: Failed to Create Category.', success: false };
   }
 
   revalidatePath('/');
   revalidatePath('/admin/dashboard');
+  revalidatePath('/user-portal');
   // redirect('/admin/dashboard'); // Let client handle redirect
   return { message: 'Category created successfully!', success: true };
 }
@@ -94,8 +95,8 @@ export async function updateCategoryAction(
   }
 
   try {
-    const { name, logoUrl, logoAiHint, contentCount, contentLink } = validatedFields.data;
-    await dataStore.updateCategory(id, { name, logoUrl, logoAiHint, contentCount, contentLink });
+    const { name, logoUrl, contentLink } = validatedFields.data;
+    await dataStore.updateCategory(id, { name, logoUrl, contentLink });
   } catch (error) {
     return { message: 'Database Error: Failed to Update Category.', success: false };
   }
@@ -103,6 +104,7 @@ export async function updateCategoryAction(
   revalidatePath('/');
   revalidatePath('/admin/dashboard');
   revalidatePath(`/admin/edit/${id}`);
+  revalidatePath('/user-portal');
   // redirect('/admin/dashboard'); // Let client handle redirect
   return { message: 'Category updated successfully!', success: true };
 }
@@ -122,5 +124,6 @@ export async function deleteCategoryAction(id: string): Promise<{ success: boole
 
   revalidatePath('/');
   revalidatePath('/admin/dashboard');
+  revalidatePath('/user-portal');
   return { success: true, message: 'Category deleted successfully.' };
 }

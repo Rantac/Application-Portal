@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea'; // Assuming you might want a description field later
+// import { Textarea } from '@/components/ui/textarea'; // Not currently used
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, Save } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -42,20 +42,16 @@ export function CategoryForm({
 
   const initialFormState: CategoryFormState = { message: '', success: false };
   
-  // The way useActionState is used depends on whether an ID is passed to the action (for update)
-  // or just previous state (for create)
   const [state, formAction] = useActionState(
     category?.id ? (prevState, formData) => action(category.id, prevState, formData) : action, 
     initialFormState
   );
 
-  const { register, handleSubmit, formState: { errors: clientErrors } } = useForm<CategoryFormData>({
+  const { register, handleSubmit, formState: { errors: clientErrors }, reset } = useForm<CategoryFormData>({
     resolver: zodResolver(CategorySchema),
     defaultValues: {
       name: category?.name || '',
       logoUrl: category?.logoUrl || '',
-      logoAiHint: category?.logoAiHint || '',
-      contentCount: category?.contentCount || 0,
       contentLink: category?.contentLink || '',
     },
   });
@@ -68,6 +64,17 @@ export function CategoryForm({
       toast({ title: "Error", description: state.message, variant: "destructive" });
     }
   }, [state, router, toast]);
+
+  useEffect(() => {
+    // Reset form with category data when category prop changes (e.g., for edit page)
+    if (category) {
+      reset({
+        name: category.name,
+        logoUrl: category.logoUrl,
+        contentLink: category.contentLink,
+      });
+    }
+  }, [category, reset]);
   
   // Combine server and client errors for display
   const displayErrors = state?.errors || clientErrors;
@@ -86,31 +93,19 @@ export function CategoryForm({
           <div className="space-y-2">
             <Label htmlFor="name">Category Name</Label>
             <Input id="name" {...register("name")} placeholder="e.g., DevOps" className="bg-input/50" />
-            {displayErrors?.name && <p className="text-sm text-destructive">{displayErrors.name.join ? displayErrors.name.join(', ') : displayErrors.name.message}</p>}
+            {displayErrors?.name && <p className="text-sm text-destructive">{displayErrors.name.join ? displayErrors.name.join(', ') : (displayErrors.name as any).message}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="logoUrl">Logo URL</Label>
             <Input id="logoUrl" type="url" {...register("logoUrl")} placeholder="https://example.com/logo.png" className="bg-input/50" />
-            {displayErrors?.logoUrl && <p className="text-sm text-destructive">{displayErrors.logoUrl.join ? displayErrors.logoUrl.join(', ') : displayErrors.logoUrl.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="logoAiHint">Logo AI Hint (for image search)</Label>
-            <Input id="logoAiHint" {...register("logoAiHint")} placeholder="e.g., blue cube, abstract lines" className="bg-input/50" />
-            {displayErrors?.logoAiHint && <p className="text-sm text-destructive">{displayErrors.logoAiHint.join ? displayErrors.logoAiHint.join(', ') : displayErrors.logoAiHint.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contentCount">Content Count (Number of Labs)</Label>
-            <Input id="contentCount" type="number" {...register("contentCount")} placeholder="e.g., 12" className="bg-input/50" />
-            {displayErrors?.contentCount && <p className="text-sm text-destructive">{displayErrors.contentCount.join ? displayErrors.contentCount.join(', ') : displayErrors.contentCount.message}</p>}
+            {displayErrors?.logoUrl && <p className="text-sm text-destructive">{displayErrors.logoUrl.join ? displayErrors.logoUrl.join(', ') : (displayErrors.logoUrl as any).message}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="contentLink">Content Link (URL)</Label>
             <Input id="contentLink" type="url" {...register("contentLink")} placeholder="https://example.com/category-details" className="bg-input/50" />
-            {displayErrors?.contentLink && <p className="text-sm text-destructive">{displayErrors.contentLink.join ? displayErrors.contentLink.join(', ') : displayErrors.contentLink.message}</p>}
+            {displayErrors?.contentLink && <p className="text-sm text-destructive">{displayErrors.contentLink.join ? displayErrors.contentLink.join(', ') : (displayErrors.contentLink as any).message}</p>}
           </div>
           
           {state?.message && !state.success && !state.errors?.general && (
@@ -120,7 +115,7 @@ export function CategoryForm({
               <AlertDescription>{state.message}</AlertDescription>
             </Alert>
           )}
-           {displayErrors?.general && <p className="text-sm text-destructive">{displayErrors.general.join ? displayErrors.general.join(', ') : displayErrors.general.message}</p>}
+           {displayErrors?.general && <p className="text-sm text-destructive">{displayErrors.general.join ? displayErrors.general.join(', ') : (displayErrors.general as any).message}</p>}
 
 
           <SubmitButton text={submitButtonText} />
