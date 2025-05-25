@@ -21,8 +21,8 @@ export const CategorySchema = z.object({
 export type CategoryFormData = z.infer<typeof CategorySchema>;
 
 export const LoginSchema = z.object({
-  username: z.string().min(1, { message: "Username is required." }),
-  password: z.string().min(1, { message: "Password is required." }),
+  username: z.string().trim().min(1, { message: "Username is required." }),
+  password: z.string().trim().min(1, { message: "Password is required." }),
 });
 
 export type LoginFormState = {
