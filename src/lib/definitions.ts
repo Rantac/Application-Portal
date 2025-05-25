@@ -3,14 +3,14 @@ import { z } from 'zod';
 export type Category = {
   id: string;
   name: string;
-  logoUrl: string;
+  logoUrl: string; // Can be a regular URL or a data URI
   contentLink: string;
 };
 
 export const CategorySchema = z.object({
   id: z.string().optional(), // Optional for creation, required for update
   name: z.string().min(3, { message: "Category name must be at least 3 characters." }),
-  logoUrl: z.string().url({ message: "Please enter a valid URL for the logo." }),
+  logoUrl: z.string().min(1, { message: "A logo image is required." }).describe("URL or data URI of the category logo."),
   contentLink: z.string().url({ message: "Please enter a valid URL for the content link." }),
 });
 
