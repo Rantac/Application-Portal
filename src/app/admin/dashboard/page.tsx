@@ -1,8 +1,8 @@
+
 import { CategoryGrid } from '@/components/category-grid';
 import { getCategories } from '@/lib/data';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { PlusCircle } from 'lucide-react';
+
+export const revalidate = 0; // Ensure fresh data on every load
 
 export default async function AdminDashboardPage() {
   const categories = await getCategories();
