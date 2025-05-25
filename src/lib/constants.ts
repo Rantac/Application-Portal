@@ -2,17 +2,16 @@
 // For this scaffold, we are hardcoding them as requested.
 
 // Username: admin
-// Password: @Black123456
+// Password: testpassword (TEMPORARY FOR DEBUGGING)
 // To generate the hash:
 // import { createHash } from 'crypto';
 // const salt = "your-very-secret-salt-for-lablink"; // Keep this secret and consistent
-// console.log(createHash('sha256').update('@Black123456' + salt).digest('hex'));
-// Output for '@Black123456' with salt 'your-very-secret-salt-for-lablink':
-// 4610b692b99709968786862314b381342d89e69789116f5d7253050e4a7a566a
+// console.log(createHash('sha256').update('testpassword' + salt).digest('hex'));
+// Output for 'testpassword' with salt 'your-very-secret-salt-for-lablink':
+// c1db53977f989cbe72a5b82f9dd9689a349e528350f893f919a61d83c97a6de7
 
 export const ADMIN_USERNAME = 'admin';
-// This is the SHA256 hash of "@Black123456" + SALT
-export const ADMIN_PASSWORD_HASH = '4610b692b99709968786862314b381342d89e69789116f5d7253050e4a7a566a';
+// This is the SHA256 hash of "testpassword" + SALT
+export const ADMIN_PASSWORD_HASH = 'c1db53977f989cbe72a5b82f9dd9689a349e528350f893f919a61d83c97a6de7';
 export const AUTH_COOKIE_NAME = 'lablink-admin-session';
 export const SALT = "your-very-secret-salt-for-lablink"; // This should be in an .env file in a real app
-
